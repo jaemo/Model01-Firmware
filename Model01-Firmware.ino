@@ -15,6 +15,8 @@
 
 // The Kaleidoscope core
 #include "Kaleidoscope.h"
+#include <Kaleidoscope-TapDance.h>
+
 
 // Support for keys that move the mouse
 #include "Kaleidoscope-MouseKeys.h"
@@ -60,6 +62,10 @@
 #include "Kaleidoscope-HostPowerManagement.h"
 
 
+#include <Kaleidoscope-LED-Wavepool.h>
+
+#include <Kaleidoscope-Heatmap.h>
+
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
   * is unique.
@@ -74,9 +80,28 @@
   */
 
 enum { MACRO_VERSION_INFO,
-       MACRO_ANY
      };
 
+
+enum {
+  TD_BRACES,
+  TD_UPDOWN,
+  TD_HOMEEND,
+};
+
+void tapDanceAction(uint8_t tap_dance_index, byte row, byte col, uint8_t tapCount, kaleidoscope::TapDance::ActionType tapDanceAction) {
+  switch (tap_dance_index) {
+    case TD_BRACES:
+    return tapDanceActionKeys(tapCount, tapDanceAction,
+                              Key_LeftBracket,
+                              Key_RightBracket);
+    case TD_UPDOWN:
+    return tapDanceActionKeys(tapCount, tapDanceAction, Key_PageDown, Key_PageUp);
+
+    case TD_HOMEEND:
+    return tapDanceActionKeys(tapCount, tapDanceAction, Key_Home, Key_End);
+  }
+}
 
 
 /** The Model 01's key layouts are defined as 'keymaps'. By default, there are three
@@ -121,7 +146,8 @@ enum { MACRO_VERSION_INFO,
   *
   */
 
-enum { QWERTY, NUMPAD, FUNCTION }; // layers
+enum { QWERTY, NUMPAD, FUNCTION};
+//enum { QWERTY, NUMPAD, FUNCTION }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -131,18 +157,18 @@ enum { QWERTY, NUMPAD, FUNCTION }; // layers
 const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [QWERTY] = KEYMAP_STACKED
-  (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
+  (Key_Escape,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
-   Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
-   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
-   Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
+   TD(TD_HOMEEND),   Key_A, Key_S, Key_D, Key_F, Key_G,
+   TD(TD_UPDOWN), Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
+   Key_LeftControl, Key_Backspace, Key_LeftAlt, Key_LeftShift,
    ShiftToLayer(FUNCTION),
 
-   M(MACRO_ANY),  Key_6, Key_7, Key_8,     Key_9,         Key_0,         LockLayer(NUMPAD),
-   Key_Enter,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
-                  Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-   Key_RightAlt,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
+   TD(TD_BRACES),  Key_6, Key_7, Key_8, Key_9, Key_0 ,LockLayer(NUMPAD),
+   Key_Tab,     Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
+   Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
+   Key_Enter,  Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   Key_RightShift, Key_RightAlt, Key_Spacebar, Key_RightControl,
    ShiftToLayer(FUNCTION)),
 
 
@@ -193,23 +219,6 @@ static void versionInfoMacro(uint8_t keyState) {
   }
 }
 
-/** anyKeyMacro is used to provide the functionality of the 'Any' key.
- *
- * When the 'any key' macro is toggled on, a random alphanumeric key is
- * selected. While the key is held, the function generates a synthetic
- * keypress event repeating that randomly selected key.
- *
- */
-
-static void anyKeyMacro(uint8_t keyState) {
-  static Key lastKey;
-  if (keyToggledOn(keyState))
-    lastKey.keyCode = Key_A.keyCode + (uint8_t)(millis() % 36);
-
-  if (keyIsPressed(keyState))
-    kaleidoscope::hid::pressKey(lastKey);
-}
-
 
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
@@ -230,9 +239,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     versionInfoMacro(keyState);
     break;
 
-  case MACRO_ANY:
-    anyKeyMacro(keyState);
-    break;
+
   }
   return MACRO_NONE;
 }
@@ -295,6 +302,8 @@ void setup() {
     // The boot greeting effect pulses the LED button for 10 seconds after the keyboard is first connected
     &BootGreetingEffect,
 
+		&TapDance,
+
     // The hardware test mode, which can be invoked by tapping Prog, LED and the left Fn button at the same time.
     &TestMode,
 
@@ -303,6 +312,12 @@ void setup() {
 
     // We start with the LED effect that turns off all the LEDs.
     &LEDOff,
+
+
+    &HeatmapEffect,
+
+    // Custom "Wavepool" effect
+    &WavepoolEffect,
 
     // The rainbow effect changes the color of all of the keyboard's keys at the same time
     // running through all the colors of the rainbow.
@@ -314,7 +329,7 @@ void setup() {
 
     // The chase effect follows the adventure of a blue pixel which chases a red pixel across
     // your keyboard. Spoiler: the blue pixel never catches the red pixel
-    &LEDChaseEffect,
+    //&LEDChaseEffect,
 
     // These static effects turn your keyboard's LEDs a variety of colors
     &solidRed, &solidOrange, &solidYellow, &solidGreen, &solidBlue, &solidIndigo, &solidViolet,
@@ -353,8 +368,8 @@ void setup() {
 
   // We set the brightness of the rainbow effects to 150 (on a scale of 0-255)
   // This draws more than 500mA, but looks much nicer than a dimmer effect
-  LEDRainbowEffect.brightness(150);
-  LEDRainbowWaveEffect.brightness(150);
+  LEDRainbowEffect.brightness(120);
+  LEDRainbowWaveEffect.brightness(120);
 
   // The LED Stalker mode has a few effects. The one we like is
   // called 'BlazingTrail'. For details on other options,
@@ -368,6 +383,8 @@ void setup() {
   // This avoids over-taxing devices that don't have a lot of power to share
   // with USB devices
   LEDOff.activate();
+
+  WavepoolEffect.idle_timeout = 0;  // 5 seconds
 }
 
 /** loop is the second of the standard Arduino sketch functions.
