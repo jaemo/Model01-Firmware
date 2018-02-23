@@ -66,6 +66,8 @@
 
 #include <Kaleidoscope-Heatmap.h>
 
+//#include "Kaleidoscope-LED-Plasma.h"
+
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
   * is unique.
@@ -316,6 +318,8 @@ void setup() {
 
     &HeatmapEffect,
 
+ //   &PlasmaEffect,
+
     // Custom "Wavepool" effect
     &WavepoolEffect,
 
@@ -374,7 +378,7 @@ void setup() {
   // The LED Stalker mode has a few effects. The one we like is
   // called 'BlazingTrail'. For details on other options,
   // see https://github.com/keyboardio/Kaleidoscope-LED-Stalker
-  StalkerEffect.variant = STALKER(Haunt);
+  StalkerEffect.variant = STALKER(Haunt, (CRGB(26, 114, 130)));
 
   // We want the keyboard to be able to wake the host up from suspend.
   HostPowerManagement.enableWakeup();
@@ -384,7 +388,7 @@ void setup() {
   // with USB devices
   LEDOff.activate();
 
-  WavepoolEffect.idle_timeout = 0;  // 5 seconds
+  WavepoolEffect.idle_timeout = 15000;  // 15 seconds
 }
 
 /** loop is the second of the standard Arduino sketch functions.
