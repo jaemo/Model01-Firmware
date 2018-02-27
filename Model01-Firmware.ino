@@ -65,7 +65,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 		 Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
 		 TD(TD_HOMEEND),   Key_A, Key_S, Key_D, Key_F, Key_G,
 		 TD(TD_UPDOWN), Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
-		 OSM(LeftControl),  Key_Backspace, Key_LeftAlt, Key_LeftShift,
+		 OSM(LeftControl), Key_LeftAlt, Key_Backspace, Key_LeftShift,
 		 ShiftToLayer(FUNCTION),
 
 		 TD(TD_BRACES),  Key_6, Key_7, Key_8, Key_9, Key_0 ,LockLayer(NUMPAD),
