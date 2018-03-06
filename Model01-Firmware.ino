@@ -15,18 +15,17 @@
 #include "Kaleidoscope.h"
 // Now all the tweaks.
 #include <Kaleidoscope-TapDance.h>
-#include <Kaleidoscope-OneShot.h>
-#include <Kaleidoscope-Escape-OneShot.h>
 #include <Kaleidoscope-LEDEffect-FunctionalColor.h>
-#include <Kaleidoscope-LED-ActiveModColor.h>
 #include "Kaleidoscope-MouseKeys.h"
 #include "Kaleidoscope-Macros.h"
 #include "Kaleidoscope-LEDControl.h"
 #include "Kaleidoscope-NumPad.h"
 #include "LED-Off.h"
-#include "Kaleidoscope-LEDEffect-BootGreeting.h"
 #include "Kaleidoscope-LEDEffect-SolidColor.h"
 #include "Kaleidoscope-HostPowerManagement.h"
+#include <Kaleidoscope-EEPROM-Settings.h>
+#include <Kaleidoscope-FingerPainter.h>
+#include <Kaleidoscope-Focus.h>
 
 // tapdance config
 enum {
@@ -65,7 +64,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 		 Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
 		 TD(TD_HOMEEND),   Key_A, Key_S, Key_D, Key_F, Key_G,
 		 TD(TD_UPDOWN), Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
-		 OSM(LeftControl), Key_LeftAlt, Key_Backspace, Key_LeftShift,
+		 Key_LeftControl, Key_LeftAlt, Key_Backspace, Key_LeftShift,
 		 ShiftToLayer(FUNCTION),
 
 		 TD(TD_BRACES),  Key_6, Key_7, Key_8, Key_9, Key_0 ,LockLayer(NUMPAD),
@@ -92,7 +91,8 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 		 ___),
 
 	[FUNCTION] =  KEYMAP_STACKED
-		(___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
+		(
+     M(0),      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
 		 Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
 		 Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
 		 Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
@@ -108,6 +108,13 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
 };
 
+const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
+    if (macroIndex == 0 && key_toggled_off (keyState)) {
+        FingerPainter.toggle();
+    }
+
+    return MACRO_NONE;
+}
 /* Re-enable astyle's indent enforcement */
 // *INDENT-ON*
 
@@ -158,17 +165,16 @@ void setup() {
 	// The order can be important. For example, LED effects are
 	// added in the order they're listed here.
 	Kaleidoscope.use(
-			&BootGreetingEffect,
-			&TapDance,
-			&OneShot,
-      &EscapeOneShot,
-			&LEDControl,
 			&LEDOff,
+      &EEPROMSettings,
+      &FingerPainter,
+      &Focus,
+			&TapDance,
+			&LEDControl,
       &solidIndigo,
 			&FunColor,
 			&FunColorMedium,
 			&NumPad,
-      &ActiveModColorEffect,
 			&Macros,
 			&MouseKeys,
 			&HostPowerManagement
@@ -215,37 +221,37 @@ void setup() {
 	// You can optionally specify a brightness value, 0-255 to dim your lights.
 
 	// Set this first to provide a "default" color for all keys, then override with the other settings.
-	FunColor.all(CRGB(250, 235, 215));
+	FunColor.all(CRGB(128, 128, 128));
 
 	// Set this second to change all modifiers (non-alphabet/numeric/punctuation keys)
-	FunColor.allModifiers(CRGB(250, 235, 215));
+	FunColor.allModifiers(CRGB(110, 140, 80));
 
 	// Set this before individual mouse settings to change all mouse-related keys
 	FunColor.allMouse(CRGB(0, 200, 200));
 
 	//Set individual groups of colors. You may delete any lines you don't need.
 	FunColor.escape(orangered, 170);
-	FunColor.numbers(orange, 120);
-	FunColor.letters_top_row(yellow, 110);
+	FunColor.numbers(orange, 0);
+	FunColor.letters_top_row(yellow, 0);
 	FunColor.letters_home_row(yellowgreen, 130);
-	FunColor.letters_bottom_row(green, 170);
+	FunColor.letters_bottom_row(green, 0);
 	FunColor.punctuation(cyan, 100);
 	FunColor.brackets(blue, 200);
 	FunColor.backslash(red, 170);
 	FunColor.pipe(cyan, 170);
-	FunColor.tab(lime, 200);
-	FunColor.backspace(red, 170);
-	FunColor.del(red, 170);
-	FunColor.enter(orangered, 210);
+	FunColor.tab(lime, 0);
+	FunColor.backspace(red, 110);
+	FunColor.del(red, 110);
+	FunColor.ctrl(purple, 110);
+	FunColor.shift(yellow, 140);
+	FunColor.enter(lime, 190);
 	FunColor.arrows(green, 170);
 	FunColor.nav(cyan, 170);
 	FunColor.insert(green, 170);
-	FunColor.shift(purple, 190);
-	FunColor.ctrl(blue, 170);
-	FunColor.alt(violet, 200);
-	FunColor.cmd(violet, 200);
+	FunColor.alt(blue, 190);
+	FunColor.cmd(blue, 190);
 	FunColor.fkeys(red, 170);
-	FunColor.fn(CRGB(250, 235, 215));
+	FunColor.fn(CRGB(240, 157, 75));
 	FunColor.media(CRGB(250, 235, 215));
 	FunColor.led(blue, 0);
 	FunColor.mousemove(cyan, 170);
@@ -259,10 +265,11 @@ void setup() {
 	// You could make adjustments to your other versions' groups here, if desired.
 
 	// Adjust the brightness of dimmed versions here from 0-255
-	FunColorMedium.brightness(210);
+	FunColorMedium.brightness(150);
 
-  ActiveModColorEffect.highlight_color = CRGB(0x43, 0xab, 0xab);
-  ActiveModColorEffect.sticky_color = CRGB(0xab, 0xab, 0x03);
+  EEPROMSettings.seal();
+
+  Focus.addHook(FOCUS_HOOK_FINGERPAINTER);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
