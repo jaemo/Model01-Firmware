@@ -15,17 +15,13 @@
 #include "Kaleidoscope.h"
 // Now all the tweaks.
 #include <Kaleidoscope-TapDance.h>
-#include <Kaleidoscope-LEDEffect-FunctionalColor.h>
 #include "Kaleidoscope-MouseKeys.h"
 #include "Kaleidoscope-Macros.h"
 #include "Kaleidoscope-LEDControl.h"
 #include "Kaleidoscope-NumPad.h"
 #include "LED-Off.h"
-#include "Kaleidoscope-LEDEffect-SolidColor.h"
+#include "Kaleidoscope-LEDEffect-Rainbow.h"
 #include "Kaleidoscope-HostPowerManagement.h"
-#include <Kaleidoscope-EEPROM-Settings.h>
-#include <Kaleidoscope-FingerPainter.h>
-#include <Kaleidoscope-Focus.h>
 
 // tapdance config
 enum {
@@ -110,7 +106,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     if (macroIndex == 0 && key_toggled_off (keyState)) {
-        FingerPainter.toggle();
+      //
     }
 
     return MACRO_NONE;
@@ -148,10 +144,6 @@ void hostPowerManagementEventHandler(kaleidoscope::HostPowerManagement::Event ev
 }
 
 
-static kaleidoscope::LEDSolidColor solidIndigo(0, 0, 170);
-
-kaleidoscope::LEDFunctionalColor FunColor;
-kaleidoscope::LEDFunctionalColor FunColorMedium;
 /** The 'setup' function is one of the two standard Arduino sketch functions.
  * It's called when your keyboard first powers up. This is where you set up
  * Kaleidoscope and any plugins.
@@ -166,14 +158,9 @@ void setup() {
 	// added in the order they're listed here.
 	Kaleidoscope.use(
 			&LEDOff,
-      &EEPROMSettings,
-      &FingerPainter,
-      &Focus,
 			&TapDance,
 			&LEDControl,
-      &solidIndigo,
-			&FunColor,
-			&FunColorMedium,
+      &LEDRainbowWaveEffect,
 			&NumPad,
 			&Macros,
 			&MouseKeys,
@@ -192,84 +179,8 @@ void setup() {
 	// This avoids over-taxing devices that don't have a lot of power to share
 	// with USB devices
 	LEDOff.activate();
+  LEDRainbowWaveEffect.brightness(110);
 
-	cRGB antiquewhite = CRGB(250, 235, 215);
-	cRGB blue = CRGB(0, 0, 255);
-	cRGB cyan = CRGB(0, 255, 255);
-	cRGB green = CRGB(0, 128, 0);
-	cRGB lightskyblue = CRGB(135, 206, 250);
-	cRGB lime = CRGB(0, 255, 0);
-	cRGB mintcream = CRGB(245, 255, 250);
-	cRGB orange = CRGB(255, 165, 0);
-	cRGB orangered = CRGB(255, 100, 0);
-	cRGB palegreen = CRGB(152, 251, 152);
-	cRGB pink = CRGB(255, 192, 203);
-	cRGB red = CRGB(255, 0, 0);
-	cRGB skyblue = CRGB(135, 206, 235);
-	cRGB slateblue = CRGB(106, 90, 205);
-	cRGB purple = CRGB(150, 50, 255);
-	cRGB violet = CRGB(255, 120, 255);
-	cRGB white = CRGB(255, 255, 255);
-	cRGB yellow = CRGB(255, 255, 0);
-	cRGB yellowgreen = CRGB(154, 205, 50);
-
-
-	// If your FUNCTION layer is not the default, you must set it here
-	FunColor.functionLayer = FUNCTION;
-
-	// Here we can set custom colors for your FunctionalColor instance.
-	// You can optionally specify a brightness value, 0-255 to dim your lights.
-
-	// Set this first to provide a "default" color for all keys, then override with the other settings.
-	FunColor.all(CRGB(128, 128, 128));
-
-	// Set this second to change all modifiers (non-alphabet/numeric/punctuation keys)
-	FunColor.allModifiers(CRGB(110, 140, 80));
-
-	// Set this before individual mouse settings to change all mouse-related keys
-	FunColor.allMouse(CRGB(0, 200, 200));
-
-	//Set individual groups of colors. You may delete any lines you don't need.
-	FunColor.escape(orangered, 170);
-	FunColor.numbers(orange, 0);
-	FunColor.letters_top_row(yellow, 0);
-	FunColor.letters_home_row(yellowgreen, 130);
-	FunColor.letters_bottom_row(green, 0);
-	FunColor.punctuation(cyan, 100);
-	FunColor.brackets(blue, 200);
-	FunColor.backslash(red, 170);
-	FunColor.pipe(cyan, 170);
-	FunColor.tab(lime, 0);
-	FunColor.backspace(red, 110);
-	FunColor.del(red, 110);
-	FunColor.ctrl(purple, 110);
-	FunColor.shift(yellow, 140);
-	FunColor.enter(lime, 190);
-	FunColor.arrows(green, 170);
-	FunColor.nav(cyan, 170);
-	FunColor.insert(green, 170);
-	FunColor.alt(blue, 190);
-	FunColor.cmd(blue, 190);
-	FunColor.fkeys(red, 170);
-	FunColor.fn(CRGB(240, 157, 75));
-	FunColor.media(CRGB(250, 235, 215));
-	FunColor.led(blue, 0);
-	FunColor.mousemove(cyan, 170);
-	FunColor.mousebuttons(orange, 170);
-	FunColor.mousewarp(cyan, 100);
-	FunColor.mousescroll(lightskyblue, 100);
-
-	//Copy new settings to the dimmed versions
-	FunColorMedium = FunColor;
-
-	// You could make adjustments to your other versions' groups here, if desired.
-
-	// Adjust the brightness of dimmed versions here from 0-255
-	FunColorMedium.brightness(150);
-
-  EEPROMSettings.seal();
-
-  Focus.addHook(FOCUS_HOOK_FINGERPAINTER);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
