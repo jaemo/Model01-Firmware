@@ -20,6 +20,7 @@
 #include "Kaleidoscope-LEDControl.h"
 #include "Kaleidoscope-NumPad.h"
 #include "LED-Off.h"
+#include <Kaleidoscope-LED-Wavepool.h>
 #include "Kaleidoscope-LEDEffect-Rainbow.h"
 #include "Kaleidoscope-HostPowerManagement.h"
 
@@ -161,6 +162,7 @@ void setup() {
 			&TapDance,
 			&LEDControl,
       &LEDRainbowWaveEffect,
+      &WavepoolEffect,
 			&NumPad,
 			&Macros,
 			&MouseKeys,
@@ -180,7 +182,7 @@ void setup() {
 	// with USB devices
 	LEDOff.activate();
   LEDRainbowWaveEffect.brightness(110);
-
+  WavepoolEffect.idle_timeout = 5000;  // 15 seconds
 }
 
 /** loop is the second of the standard Arduino sketch functions.
