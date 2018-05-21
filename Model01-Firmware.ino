@@ -23,9 +23,8 @@
 #include "LED-Off.h"
 #include "Kaleidoscope-LEDEffect-SolidColor.h"
 #include "Kaleidoscope-HostPowerManagement.h"
-#include <Kaleidoscope-EEPROM-Settings.h>
-#include <Kaleidoscope-FingerPainter.h>
-#include <Kaleidoscope-Focus.h>
+#include "Kaleidoscope-LEDEffect-Rainbow.h"
+
 
 // tapdance config
 enum {
@@ -110,7 +109,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     if (macroIndex == 0 && key_toggled_off (keyState)) {
-        FingerPainter.toggle();
+        //FingerPainter.toggle();
     }
 
     return MACRO_NONE;
@@ -166,19 +165,17 @@ void setup() {
 	// added in the order they're listed here.
 	Kaleidoscope.use(
 			&LEDOff,
-      &EEPROMSettings,
-      &FingerPainter,
-      &Focus,
 			&TapDance,
 			&LEDControl,
-      &solidIndigo,
 			&FunColor,
-			&FunColorMedium,
+      &LEDRainbowWaveEffect,
 			&NumPad,
 			&Macros,
 			&MouseKeys,
 			&HostPowerManagement
 	);
+
+	LEDRainbowWaveEffect.brightness(80);
 
 	// While we hope to improve this in the future, the NumPad plugin
 	// needs to be explicitly told which keymap layer is your numpad layer
@@ -266,10 +263,6 @@ void setup() {
 
 	// Adjust the brightness of dimmed versions here from 0-255
 	FunColorMedium.brightness(150);
-
-  EEPROMSettings.seal();
-
-  Focus.addHook(FOCUS_HOOK_FINGERPAINTER);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
