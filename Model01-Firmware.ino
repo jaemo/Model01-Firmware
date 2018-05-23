@@ -6,10 +6,12 @@
 #define BUILD_INFORMATION "locally built"
 #endif
 
+
 /**
  * These #include directives pull in the Kaleidoscope firmware core,
  * as well as the Kaleidoscope plugins we use in the Model 01's firmware
  */
+
 
 // The Kaleidoscope core
 #include "Kaleidoscope.h"
@@ -227,32 +229,32 @@ void setup() {
 	FunColor.allMouse(CRGB(0, 200, 200));
 
 	//Set individual groups of colors. You may delete any lines you don't need.
-	FunColor.escape(orangered, 170);
-	FunColor.numbers(orange, 0);
-	FunColor.letters_top_row(yellow, 0);
-	FunColor.letters_home_row(yellowgreen, 130);
-	FunColor.letters_bottom_row(green, 0);
+	FunColor.escape(orangered, 120);
+	FunColor.numbers(orange, 90);
+	FunColor.letters_top_row(yellow, 110);
+	FunColor.letters_home_row(yellowgreen, 110);
+	FunColor.letters_bottom_row(green, 110);
 	FunColor.punctuation(cyan, 100);
-	FunColor.brackets(blue, 200);
-	FunColor.backslash(red, 170);
-	FunColor.pipe(cyan, 170);
+	FunColor.brackets(blue, 100);
+	FunColor.backslash(red, 110);
+	FunColor.pipe(cyan, 110);
 	FunColor.tab(lime, 0);
 	FunColor.backspace(red, 110);
 	FunColor.del(red, 110);
 	FunColor.ctrl(purple, 110);
-	FunColor.shift(yellow, 140);
-	FunColor.enter(lime, 190);
-	FunColor.arrows(green, 170);
-	FunColor.nav(cyan, 170);
-	FunColor.insert(green, 170);
-	FunColor.alt(blue, 190);
-	FunColor.cmd(blue, 190);
-	FunColor.fkeys(red, 170);
+	FunColor.shift(yellow, 110);
+	FunColor.enter(lime, 110);
+	FunColor.arrows(green, 110);
+	FunColor.nav(cyan, 110);
+	FunColor.insert(green, 110);
+	FunColor.alt(blue, 110);
+	FunColor.cmd(blue, 110);
+	FunColor.fkeys(red, 110);
 	FunColor.fn(CRGB(240, 157, 75));
 	FunColor.media(CRGB(250, 235, 215));
 	FunColor.led(blue, 0);
-	FunColor.mousemove(cyan, 170);
-	FunColor.mousebuttons(orange, 170);
+	FunColor.mousemove(cyan, 110);
+	FunColor.mousebuttons(orange, 110);
 	FunColor.mousewarp(cyan, 100);
 	FunColor.mousescroll(lightskyblue, 100);
 
@@ -262,7 +264,7 @@ void setup() {
 	// You could make adjustments to your other versions' groups here, if desired.
 
 	// Adjust the brightness of dimmed versions here from 0-255
-	FunColorMedium.brightness(150);
+	FunColorMedium.brightness(120);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
