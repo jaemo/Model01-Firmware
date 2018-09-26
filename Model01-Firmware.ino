@@ -65,7 +65,7 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 		 Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
 		 TD(TD_HOMEEND),   Key_A, Key_S, Key_D, Key_F, Key_G,
 		 TD(TD_UPDOWN), Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Escape,
-		 Key_LeftControl, Key_LeftAlt, Key_Backspace, Key_LeftShift,
+		 Key_LeftControl, Key_LeftGui, Key_Backspace, Key_LeftShift,
 		 ShiftToLayer(FUNCTION),
 
 		 TD(TD_BRACES),  Key_6, Key_7, Key_8, Key_9, Key_0 ,LockLayer(NUMPAD),
@@ -238,7 +238,7 @@ void setup() {
 	FunColor.brackets(blue, 100);
 	FunColor.backslash(red, 110);
 	FunColor.pipe(cyan, 110);
-	FunColor.tab(lime, 0);
+	FunColor.tab(lime, 60);
 	FunColor.backspace(red, 110);
 	FunColor.del(red, 110);
 	FunColor.ctrl(purple, 110);
@@ -250,8 +250,8 @@ void setup() {
 	FunColor.alt(blue, 110);
 	FunColor.cmd(blue, 110);
 	FunColor.fkeys(red, 110);
-	FunColor.fn(CRGB(240, 157, 75));
-	FunColor.media(CRGB(250, 235, 215));
+	FunColor.fn(CRGB(140, 57, 34));
+	FunColor.media(CRGB(200, 190, 195));
 	FunColor.led(blue, 0);
 	FunColor.mousemove(cyan, 110);
 	FunColor.mousebuttons(orange, 110);
@@ -264,7 +264,7 @@ void setup() {
 	// You could make adjustments to your other versions' groups here, if desired.
 
 	// Adjust the brightness of dimmed versions here from 0-255
-	FunColorMedium.brightness(120);
+	FunColorMedium.brightness(100);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
